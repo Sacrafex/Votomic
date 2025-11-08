@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<title>Votomic - Advanced Particle Simulator</title>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            color-scheme: dark;
+            --canvas-bg-color: rgba(0, 0, 0, 0);
+        }
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #111;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #canvas {
+            border: none;
+            outline: none;
+            background-color: var(--canvas-bg-color);
+            cursor: crosshair;
+            display: block;
+        }
+        .stats {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-family: monospace;
+            background: rgba(0,0,0,0.5);
+            padding: 5px;
+            border-radius: 3px;
+            z-index: 10;
+        }
+        #fullscreenBtn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: monospace;
+            z-index: 10;
+        }
+        .title {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: #aaa;
+            font-size: 12px;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 8px;
+            border-radius: 3px;
+        }
+    </style>
+    <div class="stats" id="stats"></div>
+    <div class="title">Votomic - An Advanced Simulation by <a href="https://www.killianzabinsky.com" style="text-decoration:none;color:inherit;">Killian Zabinsky</a></div>
+    <canvas id="canvas" tabindex="1"></canvas>
+    
+    
+</head>
