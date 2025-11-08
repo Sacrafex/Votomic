@@ -63,17 +63,6 @@ body {
     gap: 20px;
     box-sizing: border-box;
 }
-.assemblerHeader {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 40px;
-    background: #111;
-    border-bottom: 2px solid #222;
-    display: flex;
-    align-items: center;
-}
 </style>
 </head>
 <body>
@@ -94,6 +83,7 @@ body {
     gap: 3px;
     margin: 0;
     transition: 0.2s;
+    margin-left: calc(35% - 280px);
 }
 .cell {
     width: 100%;
@@ -121,6 +111,29 @@ body {
     height: 100%;
     padding: 10px;
 }
+.assemblerHeader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: #111;
+    border-bottom: 2px solid #222;
+    display: flex;
+    align-items: center;
+}
+.assemblerFooter {
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    height: 25px;
+    background: #111;
+    border-bottom: 2px solid #222;
+    display: flex;
+    align-items: center;
+    display: flex;
+}
 </style>
     <div class="assemblerHeader">
     <h3 style="margin:0; padding:10px; position:absolute; top:0; left:0;">Assembler</h3>
@@ -129,6 +142,10 @@ body {
     
     <div class="menu">
     <h3>Atom Editor</h3>
+    </div>
+    <div class="assemblerFooter">
+        <p id="assemblerStatus" style="font-size:12px; padding-left:5px; margin:0;">Designed by Killian Zabinsky&nbsp;-&nbsp;No Atom Selected</p>
+        <p id="atomLocation" style="margin:0; margin-left:auto; padding-right:5px; font-size:12px; text-align:right;">{0,0}</p>
     </div>
 </div>
 
@@ -153,22 +170,57 @@ function toggleDisplayGui() {
 }
 
 // Create Atoms
+const grid = document.getElementById('grid');
+const info = document.getElementById('assemblerStatus');
+const atomLocation = document.getElementById('atomLocation');
+
+const defaultStatus = 'Nothing Selected ->';
+info.textContent = defaultStatus;
+atomLocation.textContent = '{0,0}';
+
 for (let y = 0; y < 16; y++) {
-      for (let x = 0; x < 16; x++) {
+    for (let x = 0; x < 16; x++) {
         const cell = document.createElement('div');
         cell.className = 'cell';
         cell.dataset.x = x;
         cell.dataset.y = y;
+        cell.dataset.atom = '';
+        cell.title = `Cell (${x}, ${y})`;
 
-        cell.addEventListener('mouseover', () => {
-          const a = placedAtoms[y][x];
-          info.textContent = a ? `${a.config?.name || a.name} (${a.symbol}): ${a.info}` : `Empty cell (${x},${y})`;
+        cell.addEventListener('mouseenter', () => {
+            const atom = cell.dataset.atom || 'Empty';
+            info.textContent = `Cell (${x}, ${y}) — ${atom}`;
+            atomLocation.textContent = `{${x},${y}}`;
+            cell.style.transform = 'scale(1.05)';
         });
-        cell.addEventListener('mouseout', () => info.textContent = 'Hover over an atom for details.');
-        grid.appendChild(cell);
-      }
-    }
-</script>
 
+        // Show default status on mouse leave
+        cell.addEventListener('mouseleave', () => {
+            info.textContent = defaultStatus;
+            atomLocation.textContent = '{0,0}';
+            cell.style.transform = '';
+        });
+
+        // Add or Remove an Atom on Click
+        // Add Checking for which tool is selected later within the menu
+        cell.addEventListener('click', () => {
+            if (cell.dataset.atom) {
+                // remove atom
+                cell.dataset.atom = '';
+                cell.textContent = '';
+                info.textContent = `Removed atom at (${x}, ${y})`;
+            } else {
+                // Temporary Example Atom (will be replaced with color and border later)
+                cell.dataset.atom = 'Atom';
+                cell.textContent = '•';
+                info.textContent = `Placed atom at (${x}, ${y}) — ${cell.dataset.atom}`;
+            }
+            atomLocation.textContent = `{${x},${y}}`;
+        });
+
+        grid.appendChild(cell);
+    }
+}
+</script>
 </body>
 </html>
