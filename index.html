@@ -9,40 +9,30 @@
     --canvas-bg-color: rgba(0, 0, 0, 0);
 }
 body {
-    margin: 0;
     overflow: hidden;
-    background: #111;
+    background: #070707;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
 }
 #canvas {
     border: none;
     outline: none;
     background-color: var(--canvas-bg-color);
-    cursor: crosshair;
+    cursor: default;
     display: block;
+    height: 100%;
+    width: 100%;
 }
 .stats {
     position: absolute;
     top: 10px;
     left: 10px;
-    color: white;
-    font-family: monospace;
+    color: #aaa;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: rgba(0,0,0,0.5);
-    padding: 5px;
+    padding: 4px 8px;
     border-radius: 3px;
-    z-index: 10;
-}
-#fullscreenBtn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0,0,0,0.5);
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-family: monospace;
+    font-size: 12px;
     z-index: 10;
 }
 .title {
@@ -50,33 +40,135 @@ body {
     bottom: 10px;
     left: 10px;
     color: #aaa;
-    font-size: 12px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: rgba(0,0,0,0.3);
     padding: 4px 8px;
     border-radius: 3px;
+    font-size: 12px;
+    z-index: 10;
+}
+.assemblerCreateDisplay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background: rgba(20, 20, 20, 1);
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 20;
+    overflow-y: hidden;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    box-sizing: border-box;
+}
+.assemblerHeader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: #111;
+    border-bottom: 2px solid #222;
+    display: flex;
+    align-items: center;
 }
 </style>
 </head>
 <body>
-<div class="stats" id="stats"></div>
+
+<!-- Main UI Build -->
+<div class="stats" id="stats">Nothing to Show...</div>
 <div class="title">Votomic - An Advanced Simulation by <a href="https://www.killianzabinsky.com" style="text-decoration:none;color:inherit;">Killian Zabinsky</a></div>
 <canvas id="canvas" tabindex="1"></canvas>
-<div id="assemblyCreateDisplay" style="background-color:rgba(0,0,0,0.3);">
-    <button style="margin: 20px;">Button 1</button>
-    <input type="text" style="margin: 20px;">
+
+<!-- Assembler Creation UI -->
+<div id="assemblerCreateDisplay" class="assemblerCreateDisplay">
+    <!-- Assembler Styling -->
+<style id="assemblerCreateDisplayStyles">
+.grid {
+    display: grid;
+    grid-template-columns: repeat(16, 30px);
+    grid-template-rows: repeat(16, 30px);
+    gap: 3px;
+    margin: 0;
+    transition: 0.2s;
+}
+.cell {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: #222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.25s, transform 0.25s, outline 0.15s;
+    display: flex;
+}
+.menu {
+    width: 30%;
+    background: #181818;
+    border-left: 2px solid #111111;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: auto;
+    height: 100%;
+    padding: 10px;
+}
+</style>
+    <div class="assemblerHeader">
+    <h3 style="margin:0; padding:10px; position:absolute; top:0; left:0;">Assembler</h3>
+    </div>
+    <div class="grid" id="grid"></div>
+    
+    <div class="menu">
+    <h3>Atom Editor</h3>
+    </div>
 </div>
-<script id="assemblyCreateDisplayManager">
-const displayGui = document.getElementById("assemblyCreateDisplay");
-displayGui.style.display = 'none';
+
+<!-- Assembly Management -->
+<script id="assemblerCreateDisplayManager">
+const displayGui = document.getElementById("assemblerCreateDisplay");
+//displayGui.style.display = 'none';
+
 document.addEventListener('keydown', (event) => {
     if (event.key === 'c') {
-        if (displayGui.style.display === 'none') {
-            displayGui.style.display = 'block';
-        } else {
-            displayGui.style.display = 'none';
-        }
+        toggleDisplayGui();
     }
 });
+
+// Toggle Display GUI
+function toggleDisplayGui() {
+    if (displayGui.style.display === 'none') {
+        displayGui.style.display = 'flex';
+    } else {
+        displayGui.style.display = 'none';
+    }
+}
+
+// Create Atoms
+for (let y = 0; y < 16; y++) {
+      for (let x = 0; x < 16; x++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.x = x;
+        cell.dataset.y = y;
+
+        cell.addEventListener('mouseover', () => {
+          const a = placedAtoms[y][x];
+          info.textContent = a ? `${a.config?.name || a.name} (${a.symbol}): ${a.info}` : `Empty cell (${x},${y})`;
+        });
+        cell.addEventListener('mouseout', () => info.textContent = 'Hover over an atom for details.');
+        grid.appendChild(cell);
+      }
+    }
 </script>
+
 </body>
 </html>
