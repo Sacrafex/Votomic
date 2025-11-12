@@ -156,8 +156,12 @@ body {
 }
 </style>
     <div class="assemblerHeader">
-    <h3 style="margin:0; padding:10px; position:absolute; top:0; left:0;">Assembler</h3>
-    </div>
+    <h3 style="margin:0; padding:8px; position:absolute; top:0; left:0;">Assembler</h3>
+        <div style="margin-left:auto; display:flex; gap:8px; align-items:center;"></div>
+            <a style="margin-right:10px;" href="#" onclick="toggleDisplayGui(); return false;">
+                <div class="icon icon-close" title="Close"></div>
+            </a>
+        </div>
     <div class="grid" id="grid"></div>
     
     <div class="menu">
@@ -188,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Toggle Display GUI
-    function toggleDisplayGui() {
+    const toggleDisplayGui = () => {
         if (displayGui.classList.contains('show')) {
             displayGui.classList.remove('show');
             topMenuGui.classList.add('show');
@@ -196,7 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
             displayGui.classList.add('show');
             topMenuGui.classList.remove('show');
         }
-    }
+    };
+    window.toggleDisplayGui = toggleDisplayGui;
 });
 </script>
 
@@ -259,10 +264,9 @@ for (let y = 0; y < 16; y++) {
 <!-- Top Menu GUI  -->
 <div id="topMenuGUI" class="topMenuGUI">
     <div style="flex:1; display:flex; align-items:center; height:100%; position:relative; padding:0 10px;">
-        <!-- Left Icons -->
         <div style="display:flex; gap:8px; align-items:center;">
-            <h3>Votomic</h3>
-            <div class="icon icon-new-assembly" title="New Assembly"></div>
+            <h3 style="margin:0;">Votomic</h3>
+
         </div>
         <!-- Center Icons -->
         <div style="position:absolute; left:50%; transform:translateX(-50%); display:flex; gap:8px; align-items:center;">
@@ -273,6 +277,9 @@ for (let y = 0; y < 16; y++) {
         </div>
         <!-- Right Icons -->
         <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+            <a href="#" onclick="toggleDisplayGui(); return false;">
+                <div class="icon icon-new-assembly" title="New Assembly"></div>
+            </a>
             <div class="icon icon-identify" title="Identify"></div>
             <div class="settings-icon icon" title="Settings"></div>
         </div>
@@ -292,6 +299,7 @@ for (let y = 0; y < 16; y++) {
   mask-position: center;
   mask-size: contain;
   color: #ffffff;
+  vertical-align: middle;
   transition: background-color 0.1s, transform 0.1s;
 }
 .icon:hover {
@@ -323,9 +331,14 @@ for (let y = 0; y < 16; y++) {
   mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247L16.0247 15.8748ZM7 10H15V12H7V10Z'/></svg>");
 }
 .icon-new-assembly {
-  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 3H20C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM5 5V19H19V5H5ZM11 11V7H13V11H17V13H13V17H11V13H7V11H11Z'/></svg>");
-  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 3H20C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM5 5V19H19V5H5ZM11 11V7H13V11H17V13H13V17H11V13H7V11H11Z'/></svg>");
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M15.7279 9.57627L14.3137 8.16206L5 17.4758V18.89H6.41421L15.7279 9.57627ZM17.1421 8.16206L18.5563 6.74785L17.1421 5.33363L15.7279 6.74785L17.1421 8.16206ZM7.24264 20.89H3V16.6473L16.435 3.21231C16.8256 2.82179 17.4587 2.82179 17.8492 3.21231L20.6777 6.04074C21.0682 6.43126 21.0682 7.06443 20.6777 7.45495L7.24264 20.89Z'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M15.7279 9.57627L14.3137 8.16206L5 17.4758V18.89H6.41421L15.7279 9.57627ZM17.1421 8.16206L18.5563 6.74785L17.1421 5.33363L15.7279 6.74785L17.1421 8.16206ZM7.24264 20.89H3V16.6473L16.435 3.21231C16.8256 2.82179 17.4587 2.82179 17.8492 3.21231L20.6777 6.04074C21.0682 6.43126 21.0682 7.06443 20.6777 7.45495L7.24264 20.89Z'/></svg>");
 }
+.icon-close {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M11.9997 10.5865L16.9495 5.63672L18.3637 7.05093L13.4139 12.0007L18.3637 16.9504L16.9495 18.3646L11.9997 13.4149L7.04996 18.3646L5.63574 16.9504L10.5855 12.0007L5.63574 7.05093L7.04996 5.63672L11.9997 10.5865Z'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M11.9997 10.5865L16.9495 5.63672L18.3637 7.05093L13.4139 12.0007L18.3637 16.9504L16.9495 18.3646L11.9997 13.4149L7.04996 18.3646L5.63574 16.9504L10.5855 12.0007L5.63574 7.05093L7.04996 5.63672L11.9997 10.5865Z'/></svg>");
+}
+
 </style>
 </body>
 </html>
