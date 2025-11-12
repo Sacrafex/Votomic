@@ -25,8 +25,8 @@ body {
 }
 .stats {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    bottom: 10px;
+    right: 10px;
     color: #aaa;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: rgba(0,0,0,0.5);
@@ -46,22 +46,6 @@ body {
     border-radius: 3px;
     font-size: 12px;
     z-index: 10;
-}
-.assemblerCreateDisplay {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    background: rgba(20, 20, 20, 1);
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    z-index: 20;
-    overflow-y: hidden;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 20px;
-    box-sizing: border-box;
 }
 </style>
 </head>
@@ -116,7 +100,7 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 40px;
+    height: 4%;
     background: #111;
     border-bottom: 2px solid #222;
     display: flex;
@@ -132,6 +116,42 @@ body {
     border-bottom: 2px solid #222;
     display: flex;
     align-items: center;
+    display: flex;
+}
+.assemblerCreateDisplay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background: rgba(20, 20, 20, 1);
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 20;
+    overflow-y: hidden;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    box-sizing: border-box;
+    display: none;
+}
+.assemblerCreateDisplay.show {
+    opacity: 1;
+    display: flex;
+}
+.topMenuGUI {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4%;
+    background: #111;
+    border-bottom: 2px solid #222;
+    display: flex;
+    align-items: center;
+    display: none;
+}
+.topMenuGUI.show {
+    opacity: 1;
     display: flex;
 }
 </style>
@@ -150,24 +170,37 @@ body {
 </div>
 
 <!-- Assembly Management -->
-<script id="assemblerCreateDisplayManager">
-const displayGui = document.getElementById("assemblerCreateDisplay");
-//displayGui.style.display = 'none';
+<script id="screenManagement">
+document.addEventListener('DOMContentLoaded', () => {
+    const displayGui = document.getElementById("assemblerCreateDisplay");
+    const topMenuGui = document.getElementById("topMenuGUI");
 
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'c') {
-        toggleDisplayGui();
+    // Error Handling
+    if (!displayGui || !topMenuGui) return;
+
+    displayGui.classList.remove('show');
+    topMenuGui.classList.add('show');
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key && event.key.toLowerCase() === 'c') {
+            toggleDisplayGui();
+        }
+    });
+
+    // Toggle Display GUI
+    function toggleDisplayGui() {
+        if (displayGui.classList.contains('show')) {
+            displayGui.classList.remove('show');
+            topMenuGui.classList.add('show');
+        } else {
+            displayGui.classList.add('show');
+            topMenuGui.classList.remove('show');
+        }
     }
 });
+</script>
 
-// Toggle Display GUI
-function toggleDisplayGui() {
-    if (displayGui.style.display === 'none') {
-        displayGui.style.display = 'flex';
-    } else {
-        displayGui.style.display = 'none';
-    }
-}
+<script id="assemblyGridSetup">
 
 // Create Atoms
 const grid = document.getElementById('grid');
@@ -222,5 +255,10 @@ for (let y = 0; y < 16; y++) {
     }
 }
 </script>
+
+<!-- Top Menu GUI  -->
+<div id="topMenuGUI" class="topMenuGUI">
+    <h3 style="margin:0; padding:10px; position:absolute; top:0; left:0;">Votomic</h3>
+</div>
 </body>
 </html>
