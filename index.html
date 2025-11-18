@@ -166,6 +166,10 @@ body {
     
     <div class="menu">
     <h3>Atom Editor</h3>
+    <div style="display:flex; gap:8px; margin-top:6px;">
+
+        <button id="btnClearGrid" style="background:#1f1f1f;color:#bbb;border:1px solid #333;padding:6px 10px;border-radius:4px;cursor:pointer;">Clear Grid</button>
+    </div>
     </div>
     <div class="assemblerFooter">
         <p id="assemblerStatus" style="font-size:12px; padding-left:5px; margin:0;">Designed by Killian Zabinsky&nbsp;-&nbsp;No Atom Selected</p>
@@ -178,9 +182,6 @@ body {
 document.addEventListener('DOMContentLoaded', () => {
     const displayGui = document.getElementById("assemblerCreateDisplay");
     const topMenuGui = document.getElementById("topMenuGUI");
-
-    // Error Handling
-    if (!displayGui || !topMenuGui) return;
 
     displayGui.classList.remove('show');
     topMenuGui.classList.add('show');
@@ -196,9 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (displayGui.classList.contains('show')) {
             displayGui.classList.remove('show');
             topMenuGui.classList.add('show');
+            if (window.VotomicEngine) window.VotomicEngine.start();
         } else {
             displayGui.classList.add('show');
             topMenuGui.classList.remove('show');
+            if (window.VotomicEngine) window.VotomicEngine.stop();
         }
     };
     window.toggleDisplayGui = toggleDisplayGui;
@@ -259,6 +262,12 @@ for (let y = 0; y < 16; y++) {
         grid.appendChild(cell);
     }
 }
+
+// Clear Grid Button
+if (btnClearGrid) btnClearGrid.addEventListener('click', ()=>{
+    Array.from(grid.querySelectorAll('.cell')).forEach(c=>{ c.dataset.atom=''; c.textContent='';});
+    info.textContent = 'Cleared grid';
+});
 </script>
 
 <!-- Top Menu GUI  -->
@@ -301,7 +310,9 @@ for (let y = 0; y < 16; y++) {
   color: #ffffff;
   vertical-align: middle;
   transition: background-color 0.1s, transform 0.1s;
+    cursor: pointer;
 }
+.icon.active { color: #52b788; }
 .icon:hover {
   background-color: #747474;
   transform: scale(1.1);
@@ -340,5 +351,9 @@ for (let y = 0; y < 16; y++) {
 }
 
 </style>
+
+<!-- Core Simulation Engine -->
+<script id="engine">
+</script>
 </body>
 </html>
