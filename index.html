@@ -59,7 +59,7 @@ body {
 <canvas id="canvas" tabindex="1"></canvas>
 
 <!-- Assembler Creation UI -->
-<div id="assemblerCreateDisplay" class="assemblerCreateDisplay">
+
     <!-- Assembler Styling -->
 <style id="assemblerCreateDisplayStyles">
 .grid {
@@ -140,6 +140,51 @@ body {
     opacity: 1;
     display: flex;
 }
+
+.GravityCreateDisplay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background: rgba(20, 20, 20, 1);
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 30;
+    overflow-y: hidden;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    box-sizing: border-box;
+    display: none;
+}
+.GravityCreateDisplay.show {
+    opacity: 1;
+    display: flex;
+}
+.gravityHeader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 35px;
+    background: #111;
+    border-bottom: 2px solid #222;
+    display: flex;
+    align-items: center;
+    z-index: 31;
+}
+.gravityFooter {
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    height: 25px;
+    background: #111;
+    border-bottom: 2px solid #222;
+    display: flex;
+    align-items: center;
+    display: flex;
+}
 .topMenuGUI {
     position: absolute;
     top: 0;
@@ -157,10 +202,11 @@ body {
     display: flex;
 }
 </style>
-    <div class="assemblerHeader">
+<div id="assemblerCreateDisplay" class="assemblerCreateDisplay">
+<div class="assemblerHeader">
     <h3 style="margin:0; padding:8px; position:absolute; top:0; left:0;">Assembler</h3>
         <div style="margin-left:auto; display:flex; gap:8px; align-items:center;"></div>
-            <a style="margin-right:10px;" href="#" onclick="toggleDisplayGui(); return false;">
+            <a style="margin-right:10px;" href="#" onclick="toggleAssemblerDisplayGui(); return false;">
                 <div class="icon icon-close" title="Close"></div>
             </a>
         </div>
@@ -179,34 +225,65 @@ body {
     </div>
 </div>
 
+<!-- Gravity Editor UI -->
+<div id="GravityCreateDisplay" class="GravityCreateDisplay">
+<div id="gravityHeader" class="gravityHeader">
+    <h3 style="margin:0; padding:8px; position:absolute; top:0; left:0;">Gravity Editor</h3>
+        <div style="margin-left:auto; display:flex; gap:8px; align-items:center;"></div>
+            <a style="margin-right:10px;" href="#" onclick="toggleGravityDisplayGui(); return false;">
+                <div class="icon icon-close" title="Close"></div>
+            </a>
+        </div>
+    <div class="gravityFooter">
+        <p id="gravityStatus" style="font-size:12px; padding-left:5px; margin:0;">Undefined.</p>
+    </div>
+</div>
+</div>
+
 <!-- Assembly Management -->
 <script id="screenManagement">
 document.addEventListener('DOMContentLoaded', () => {
-    const displayGui = document.getElementById("assemblerCreateDisplay");
+    const assemblerDisplayGui = document.getElementById("assemblerCreateDisplay");
+    const gravityDisplayGui = document.getElementById("GravityCreateDisplay");
     const topMenuGui = document.getElementById("topMenuGUI");
 
-    displayGui.classList.remove('show');
+    assemblerDisplayGui.classList.remove('show');
     topMenuGui.classList.add('show');
 
     document.addEventListener('keydown', (event) => {
         if (event.key && event.key.toLowerCase() === 'c') {
-            toggleDisplayGui();
+            toggleAssemblerDisplayGui();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key && event.key.toLowerCase() === 'g') {
+            toggleGravityDisplayGui();
         }
     });
 
     // Toggle Display GUI
-    const toggleDisplayGui = () => {
-        if (displayGui.classList.contains('show')) {
-            displayGui.classList.remove('show');
+    const toggleAssemblerDisplayGui = () => {
+        if (assemblerDisplayGui.classList.contains('show')) {
+            assemblerDisplayGui.classList.remove('show');
             topMenuGui.classList.add('show');
-            if (window.VotomicEngine) window.VotomicEngine.start();
         } else {
-            displayGui.classList.add('show');
+            assemblerDisplayGui.classList.add('show');
             topMenuGui.classList.remove('show');
-            if (window.VotomicEngine) window.VotomicEngine.stop();
         }
     };
-    window.toggleDisplayGui = toggleDisplayGui;
+
+    const toggleGravityDisplayGui = () => {
+        if (gravityDisplayGui.classList.contains('show')) {
+            gravityDisplayGui.classList.remove('show');
+            topMenuGui.classList.add('show');
+        } else {
+            gravityDisplayGui.classList.add('show');
+            topMenuGui.classList.remove('show');
+        }
+    };
+    window.toggleGravityDisplayGui = toggleGravityDisplayGui;
+    window.toggleAssemblerDisplayGui = toggleAssemblerDisplayGui;
 });
 </script>
 
@@ -287,8 +364,11 @@ if (btnClearGrid) btnClearGrid.addEventListener('click', ()=>{
         </div>
         <!-- Right Icons -->
         <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
-            <a href="#" onclick="toggleDisplayGui(); return false;">
+            <a href="#" onclick="toggleAssemblerDisplayGui(); return false;">
                 <div class="icon icon-new-assembly" title="New Assembly"></div>
+            </a>
+            <a href="#" onclick="toggleGravityDisplayGui(); return false;">
+                <div class="icon icon-gravity-editor" title="Gravity Editor"></div>
             </a>
             <div class="icon icon-identify" title="Identify"></div>
             <div class="settings-icon icon" title="Settings"></div>
@@ -345,6 +425,10 @@ if (btnClearGrid) btnClearGrid.addEventListener('click', ()=>{
 .icon-new-assembly {
   -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M15.7279 9.57627L14.3137 8.16206L5 17.4758V18.89H6.41421L15.7279 9.57627ZM17.1421 8.16206L18.5563 6.74785L17.1421 5.33363L15.7279 6.74785L17.1421 8.16206ZM7.24264 20.89H3V16.6473L16.435 3.21231C16.8256 2.82179 17.4587 2.82179 17.8492 3.21231L20.6777 6.04074C21.0682 6.43126 21.0682 7.06443 20.6777 7.45495L7.24264 20.89Z'/></svg>");
   mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M15.7279 9.57627L14.3137 8.16206L5 17.4758V18.89H6.41421L15.7279 9.57627ZM17.1421 8.16206L18.5563 6.74785L17.1421 5.33363L15.7279 6.74785L17.1421 8.16206ZM7.24264 20.89H3V16.6473L16.435 3.21231C16.8256 2.82179 17.4587 2.82179 17.8492 3.21231L20.6777 6.04074C21.0682 6.43126 21.0682 7.06443 20.6777 7.45495L7.24264 20.89Z'/></svg>");
+}
+.icon-gravity-editor {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M15.7279 9.57627L14.3137 8.16206L5 17.4758V18.89H6.41421L15.7279 9.57627ZM17.1421 8.16206L18.5563 6.74785L17.1421 5.33363L15.7279 6.74785L17.1421 8.16206ZM7.24264 20.89H3V16.6473L16.435 3.21231C16.8256 2.82179 17.4587 2.82179 17.8492 3.21231L20.6777 6.04074C21.0682 6.43126 21.0682 7.06443 20.6777 7.45495L7.24264 20.89Z'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd' clip-rule='evenodd' viewBox='0 0 24 24'><path d='M11.9998 5.80615C10.8546 6.5426 9.69194 7.47421 8.58259 8.58356C7.4739 9.69225 6.54273 10.8542 5.80649 11.9988C6.54298 13.1441 7.47468 14.3069 8.58418 15.4164C9.69301 16.5252 10.8552 17.4565 11.9998 18.1928C13.1445 17.4565 14.3066 16.5252 15.4154 15.4164C16.5249 14.3069 17.4566 13.1441 18.1931 11.9988C17.4569 10.8542 16.5257 9.69226 15.417 8.58356C14.3077 7.47421 13.145 6.54261 11.9998 5.80615ZM13.7845 4.80734C14.7828 5.51769 15.7694 6.35036 16.7098 7.29078C17.6496 8.23059 18.4818 9.21647 19.1918 10.2141C19.4153 9.74368 19.6019 9.2832 19.7503 8.83806C20.4512 6.73546 20.2234 5.26592 19.4783 4.52074C18.7331 3.77556 17.2635 3.5478 15.1609 4.24867C14.7157 4.39709 14.2551 4.58376 13.7845 4.80734ZM19.1922 13.7832C18.4817 14.7817 17.6489 15.7685 16.7082 16.7092C15.7682 17.6492 14.7821 18.4816 13.7842 19.1917C14.2554 19.4157 14.7167 19.6027 15.1625 19.7513C17.2651 20.4522 18.7347 20.2244 19.4798 19.4792C20.225 18.734 20.4528 17.2645 19.7519 15.1619C19.6033 14.7159 19.4162 14.2545 19.1922 13.7832ZM11.9998 20.3254C12.8757 20.8159 13.745 21.2059 14.5844 21.4857C16.8931 22.2553 19.274 22.2707 20.7726 20.772C22.2713 19.2734 22.2559 16.8925 21.4864 14.5838C21.2065 13.7441 20.8163 12.8747 20.3257 11.9986C20.8156 11.1234 21.2052 10.2549 21.4848 9.41621C22.2544 7.10746 22.2697 4.72661 20.771 3.22796C19.2724 1.72931 16.8915 1.74464 14.5828 2.51422C13.7439 2.79386 12.8752 3.18359 11.9998 3.67367C11.1244 3.1836 10.2557 2.79387 9.41683 2.51423C7.10809 1.74465 4.72723 1.72932 3.22858 3.22797C1.72993 4.72662 1.74527 7.10747 2.51485 9.41622C2.79442 10.2549 3.18403 11.1234 3.67394 11.9986C3.18328 12.8747 2.79313 13.7441 2.51326 14.5837C1.74368 16.8925 1.72835 19.2733 3.227 20.772C4.72565 22.2707 7.1065 22.2553 9.41525 21.4857C10.2547 21.2059 11.1239 20.8159 11.9998 20.3254ZM10.2154 19.1917C9.21755 18.4816 8.23142 17.6492 7.2914 16.7092C6.35075 15.7685 5.51792 14.7817 4.80746 13.7832C4.5834 14.2545 4.39637 14.7159 4.24771 15.1619C3.54684 17.2645 3.7746 18.734 4.51978 19.4792C5.26496 20.2244 6.7345 20.4522 8.8371 19.7513C9.28295 19.6027 9.7442 19.4157 10.2154 19.1917ZM4.80778 10.2141C5.51782 9.21647 6.35001 8.23058 7.28981 7.29078C8.23023 6.35035 9.21679 5.51769 10.2151 4.80734C9.74454 4.58376 9.28394 4.3971 8.83868 4.24868C6.73608 3.54781 5.26654 3.77557 4.52136 4.52075C3.77618 5.26593 3.54843 6.73547 4.24929 8.83807C4.39767 9.2832 4.58428 9.74368 4.80778 10.2141ZM11.9998 10.5201C11.1825 10.5201 10.5199 11.1826 10.5199 12C10.5199 12.8173 11.1825 13.4799 11.9998 13.4799C12.8171 13.4799 13.4797 12.8173 13.4797 12C13.4797 11.1826 12.8171 10.5201 11.9998 10.5201ZM8.69163 12C8.69163 10.1729 10.1727 8.69179 11.9998 8.69179C13.8269 8.69179 15.308 10.1729 15.308 12C15.308 13.827 13.8269 15.3081 11.9998 15.3081C10.1727 15.3081 8.69163 13.827 8.69163 12Z'/></svg>");
 }
 .icon-close {
   -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M11.9997 10.5865L16.9495 5.63672L18.3637 7.05093L13.4139 12.0007L18.3637 16.9504L16.9495 18.3646L11.9997 13.4149L7.04996 18.3646L5.63574 16.9504L10.5855 12.0007L5.63574 7.05093L7.04996 5.63672L11.9997 10.5865Z'/></svg>");
